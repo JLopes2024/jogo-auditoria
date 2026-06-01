@@ -2,15 +2,23 @@ import React from 'react';
 
 function Header({ budget, alertLevel, assedioLevel, rank }) {
   return (
-    <header className="header-container" style={{ display: 'flex', gap: '20px', padding: '10px' }}>
+    <header style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      padding: '10px 20px', 
+      backgroundColor: '#1a1a1a', 
+      color: '#fff',
+      fontSize: '0.9rem',
+      gap: '20px'
+    }}>
       <div><strong>Patente:</strong> {rank}</div>
       <div><strong>Saldo:</strong> R$ {budget.toLocaleString('pt-BR')}</div>
       
-      {/* Adicione estes indicadores */}
-      <div style={{ color: alertLevel > 70 ? 'red' : 'black' }}>
+      <div style={{ color: alertLevel > 60 ? '#ff4d4d' : '#ffd700', fontWeight: 'bold' }}>
         ⚠️ Risco Fiscal: {alertLevel}%
       </div>
-      <div style={{ color: assedioLevel > 70 ? 'orange' : 'black' }}>
+      
+      <div style={{ color: assedioLevel > 60 ? '#ff4d4d' : '#ffd700', fontWeight: 'bold' }}>
         ⚖️ Assédio Moral: {assedioLevel}%
       </div>
     </header>

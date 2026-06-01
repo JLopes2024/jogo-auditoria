@@ -7,10 +7,10 @@ function Header({ budget, alertLevel, assedioLevel, rank }) {
       <div><strong>Saldo:</strong> R$ {budget.toLocaleString('pt-BR')}</div>
       
       {/* Adicione estes indicadores */}
-      <div style={{ color: alertLevel > 70 ? 'red' : 'white' }}>
+      <div style={{ color: alertLevel > 70 ? 'red' : 'black' }}>
         ⚠️ Risco Fiscal: {alertLevel}%
       </div>
-      <div style={{ color: assedioLevel > 70 ? 'orange' : 'white' }}>
+      <div style={{ color: assedioLevel > 70 ? 'orange' : 'black' }}>
         ⚖️ Assédio Moral: {assedioLevel}%
       </div>
     </header>

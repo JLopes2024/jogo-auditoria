@@ -12,9 +12,11 @@ import GameResult from './components/GameResult';
 import EventModal from './components/EventModal';
 import IndictmentBoard from './components/IndictmentBoard';
 import EvidenceRoom from './components/EvidenceRoom';
+import EmailCenter from './components/EmailCenter';
 
 function App() {
   const [gameStatus, setGameStatus] = useState("start"); 
+  const [playerName, setPlayerName] = useState(localStorage.getItem('auditorName') || "");
   const [suspects, setSuspects] = useState(suspectsData);
   const [activeSuspect, setActiveSuspect] = useState(null);
   const [feedback, setFeedback] = useState("");
@@ -30,6 +32,12 @@ function App() {
 
   const penaltyAmount = 50000;
   const rewardAmount = 25000; 
+
+  const handleStartGame = (name) => {
+    localStorage.setItem('auditorName', name);
+    setPlayerName(name);
+    setGameStatus("playing");
+  };
 
   const getPlayerRank = () => {
     const evidenceCount = inventory.length;
@@ -83,6 +91,13 @@ function App() {
     checkGameOver(newBudget, alertLevel, assedioLevel);
   };
 
+  const handlePhishing = () => {
+    alert("⚠️ ALERTA! Você clicou em um link de Phishing! Seus dados foram criptografados.");
+    setBudget(prev => prev - 30000);
+    setAlertLevel(prev => prev + 30);
+    checkGameOver(budget - 30000, alertLevel + 30, assedioLevel);
+  };
+
   const handleOptionClick = (option) => {
     const penaltyAssedio = option.assedioPenalty || 0;
     const newAssedio = assedioLevel + penaltyAssedio;
@@ -91,16 +106,13 @@ function App() {
     if (option.isCorrect) {
       setSuspects(prev => prev.map(s => s.id === activeSuspect.id ? { ...s, isCompleted: true } : s));
       setActiveSuspect(prev => ({ ...prev, isCompleted: true }));
-
       if (option.evidenceGiven && !inventory.includes(option.evidenceGiven)) {
         setInventory([...inventory, option.evidenceGiven]);
-        const newBudget = budget + rewardAmount;
-        setBudget(newBudget);
+        setBudget(prev => prev + rewardAmount);
         setFeedback(`✅ ${option.feedback} \n\n 💼 PROVA COLETADA: [ ${option.evidenceGiven} ]`);
       } else {
         setFeedback(`✅ ${option.feedback}`);
       }
-      
       if (activeSuspect.id === 13) setIsMuralUnlocked(true);
       checkGameOver(budget, alertLevel, newAssedio); 
     } else {
@@ -139,7 +151,7 @@ function App() {
     if (board.mentor === 13 && board.juridico === 16 && board.financeiro === 10 && board.contabil === 11 && board.lavagem === 3 && board.dados === 9) {
       setGameStatus("victory");
     } else {
-      setBudget(budget - penaltyAmount);
+      setBudget(prev => prev - penaltyAmount);
       alert(`❌ INDICIAMENTO REJEITADO!`);
     }
   };
@@ -150,31 +162,29 @@ function App() {
     setTurnCounter(0); setActiveEvent(null); setIsMuralUnlocked(false); setGameStatus("start");
   };
 
-  if (gameStatus === "start") return <StartScreen onStart={() => setGameStatus("playing")} />;
+  if (gameStatus === "start") return <StartScreen onStart={handleStartGame} savedName={playerName} />;
   if (gameStatus !== "playing") return <GameResult status={gameStatus} budget={budget} restartGame={restartGame} />;
 
   return (
     <div className="app-layout">
       <EventModal event={activeEvent} resolveEvent={handleResolveEvent} />
-      <Header budget={budget} alertLevel={alertLevel} assedioLevel={assedioLevel} rank={currentRank} />
+      <Header playerName={playerName} budget={budget} alertLevel={alertLevel} assedioLevel={assedioLevel} rank={currentRank} />
       <div className="main-body">
         <nav className="nav-menu">
           <button onClick={() => setActiveTab("dashboard")} className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`}><span className="nav-icon">📊</span><span>Painel</span></button>
-          <button onClick={() => setActiveTab("suspeitos")} className={`nav-item mobile-only ${activeTab === "suspeitos" ? "active" : ""}`}><span className="nav-icon">👥</span><span>Alvos</span></button>
           <button onClick={() => setActiveTab("interrogatorio")} className={`nav-item ${activeTab === "interrogatorio" ? "active" : ""}`}><span className="nav-icon">🕵️</span><span>Interrogatório</span></button>
           <button onClick={() => setActiveTab("provas")} className={`nav-item ${activeTab === "provas" ? "active" : ""}`}><span className="nav-icon">🗂️</span><span>Provas</span></button>
+          <button onClick={() => setActiveTab("email")} className={`nav-item ${activeTab === "email" ? "active" : ""}`}><span className="nav-icon">📧</span><span>E-mail</span></button>
           {isMuralUnlocked && (<button onClick={() => setActiveTab("mural")} className={`nav-item ${activeTab === "mural" ? "active" : ""}`}><span className="nav-icon">📎</span><span>Relatório</span></button>)}
         </nav>
         <div className="desktop-sidebar">
           <Sidebar suspects={suspects} onSelectSuspect={handleSelectSuspect} activeTab="interrogatorio" inventory={inventory} />
         </div>
         <div className="content-area">
-          <div style={{ display: activeTab === 'suspeitos' ? 'block' : 'none', width: '100%' }} className="mobile-only">
-            <Sidebar suspects={suspects} onSelectSuspect={handleSelectSuspect} activeTab={activeTab} inventory={inventory} />
-          </div>
           {activeTab === "dashboard" && <Dashboard suspects={suspects} />}
           {activeTab === "interrogatorio" && (<Interrogation activeSuspect={activeSuspect} handleOptionClick={handleOptionClick} handlePresentEvidence={handlePresentEvidence} buyHint={handleBuyHint} feedback={feedback} inventory={inventory} />)}
           {activeTab === "provas" && (<EvidenceRoom inventory={inventory} analyzedEvidences={analyzedEvidences} onAnalyzeEvidence={handleAnalyzeEvidence} />)}
+          {activeTab === "email" && (<EmailCenter onPhishingClick={handlePhishing} onDenunciaClick={() => alert("✅ Denúncia Segura!")} />)}
           {activeTab === "mural" && (<IndictmentBoard suspects={suspects} onFinalArrest={handleFinalArrest} />)}
         </div>
       </div>

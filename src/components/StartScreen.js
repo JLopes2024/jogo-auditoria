@@ -1,25 +1,22 @@
-import React from 'react';
-import { auth, provider } from '../firebase';
-import { signInWithPopup } from 'firebase/auth';
+import React, { useState } from 'react';
 
-function StartScreen({ onStart }) {
-  const handleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      onStart(result.user);
-    } catch (error) {
-      console.error("Erro no login:", error);
-    }
-  };
+function StartScreen({ onStart, savedName }) {
+  const [name, setName] = useState(savedName || "");
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '100px' }}>
+    <div className="start-screen" style={{ textAlign: 'center', padding: '50px' }}>
       <h1>Simulador de Auditoria</h1>
-      <button onClick={handleLogin} style={{ padding: '15px 30px', fontSize: '18px', cursor: 'pointer' }}>
-        ENTRAR COM GOOGLE
+      <input 
+        type="text" 
+        placeholder="Digite seu nome de Auditor..." 
+        value={name} 
+        onChange={(e) => setName(e.target.value)} 
+        style={{ padding: '10px', fontSize: '16px', display: 'block', margin: '20px auto' }}
+      />
+      <button disabled={!name} onClick={() => onStart(name)} style={{ padding: '10px 20px', cursor: 'pointer' }}>
+        Iniciar Investigação
       </button>
     </div>
   );
 }
-
 export default StartScreen;

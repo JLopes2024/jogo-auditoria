@@ -21,11 +21,14 @@ function VirusScreen({ onFinish }) {
   }, [onFinish]);
 
   return (
-    <div style={{ backgroundColor: 'black', color: '#00FF00', padding: '20px', height: '100vh', fontFamily: 'monospace' }}>
+   <div style={{ backgroundColor: 'black', color: '#00FF00', padding: '20px', height: '100vh', fontFamily: 'monospace' }}>
       <h2>⚠️ SISTEMA COMPROMETIDO</h2>
       {logs.map((log, index) => <div key={index}>{`> ${log}`}</div>)}
       <h1 style={{ color: 'red', marginTop: '50px' }}>VOCÊ PERDEU R$ 30.000 PELO ERRO!</h1>
-    </div>
+      
+      <button onClick={onFinish} style={{ marginTop: '20px', padding: '15px', cursor: 'pointer' }}>
+        TENTAR RECUPERAR SISTEMA
+      </button>
   );
 }
 export default VirusScreen;

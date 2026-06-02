@@ -169,6 +169,7 @@ function App() {
     <div className="app-layout">
       <EventModal event={activeEvent} resolveEvent={handleResolveEvent} />
       <Header playerName={playerName} budget={budget} alertLevel={alertLevel} assedioLevel={assedioLevel} rank={currentRank} />
+      
       <div className="main-body">
         <nav className="nav-menu">
           <button onClick={() => setActiveTab("dashboard")} className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`}><span className="nav-icon">📊</span><span>Painel</span></button>
@@ -177,9 +178,12 @@ function App() {
           <button onClick={() => setActiveTab("email")} className={`nav-item ${activeTab === "email" ? "active" : ""}`}><span className="nav-icon">📧</span><span>E-mail</span></button>
           {isMuralUnlocked && (<button onClick={() => setActiveTab("mural")} className={`nav-item ${activeTab === "mural" ? "active" : ""}`}><span className="nav-icon">📎</span><span>Relatório</span></button>)}
         </nav>
-        <div className="desktop-sidebar">
-          <Sidebar suspects={suspects} onSelectSuspect={handleSelectSuspect} activeTab="interrogatorio" inventory={inventory} />
+
+        {/* Sidebar visível em todos os tamanhos, controlado por CSS */}
+        <div className="sidebar-container">
+          <Sidebar suspects={suspects} onSelectSuspect={handleSelectSuspect} activeTab={activeTab} inventory={inventory} />
         </div>
+
         <div className="content-area">
           {activeTab === "dashboard" && <Dashboard suspects={suspects} />}
           {activeTab === "interrogatorio" && (<Interrogation activeSuspect={activeSuspect} handleOptionClick={handleOptionClick} handlePresentEvidence={handlePresentEvidence} buyHint={handleBuyHint} feedback={feedback} inventory={inventory} />)}

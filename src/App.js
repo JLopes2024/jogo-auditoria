@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { suspectsData } from './suspectsData';
-import { eventsData } from './eventsData';
 import './App.css'; 
 
 import StartScreen from './components/StartScreen';
@@ -26,7 +25,6 @@ function App() {
   const [analyzedEvidences, setAnalyzedEvidences] = useState([]); 
   const [alertLevel, setAlertLevel] = useState(0); 
   const [assedioLevel, setAssedioLevel] = useState(0); 
-  const [turnCounter, setTurnCounter] = useState(0);
   const [activeEvent, setActiveEvent] = useState(null);
   const [isMuralUnlocked, setIsMuralUnlocked] = useState(false);
 
@@ -52,7 +50,7 @@ function App() {
     if (newBudget <= 0) setGameStatus("gameover_money");
     else if (newAlert >= 100) setGameStatus("gameover_alert");
     else if (newAssedio >= 100) {
-      alert("💥 PROCESSO GIGANTE! O Sindicato processou a empresa por Assédio Moral.");
+      alert("💥 PROCESSO GIGANTE! O Sindicato processou a empresa.");
       setGameStatus("gameover_alert"); 
     }
   };
@@ -66,25 +64,20 @@ function App() {
   };
 
   const handleBuyHint = (suspect) => {
-    const newBudget = budget - 10000;
-    setBudget(newBudget);
+    setBudget(prev => prev - 10000);
     setSuspects(prev => prev.map(s => s.id === suspect.id ? { ...s, hintPurchased: true } : s));
     setActiveSuspect(prev => ({ ...prev, hintPurchased: true }));
-    checkGameOver(newBudget, alertLevel, assedioLevel);
   };
 
   const handleAnalyzeEvidence = (evidenceName) => {
-    const newBudget = budget - 15000;
-    setBudget(newBudget);
+    setBudget(prev => prev - 15000);
     setAnalyzedEvidences([...analyzedEvidences, evidenceName]);
-    checkGameOver(newBudget, alertLevel, assedioLevel);
   };
 
   const handlePhishing = () => {
     alert("⚠️ ALERTA! Você clicou em um link de Phishing!");
     setBudget(prev => prev - 30000);
     setAlertLevel(prev => prev + 30);
-    checkGameOver(budget - 30000, alertLevel + 30, assedioLevel);
   };
 
   const handleOptionClick = (option) => {
@@ -102,18 +95,14 @@ function App() {
         setFeedback(`✅ ${option.feedback}`);
       }
       if (activeSuspect.id === 13) setIsMuralUnlocked(true);
-      checkGameOver(budget, alertLevel, newAssedio); 
     } else {
       const optionCost = option.cost || penaltyAmount;
-      const newBudget = budget - optionCost;
-      const newAlert = alertLevel + (option.alertPenalty || 15);
-      setBudget(newBudget); setAlertLevel(newAlert);
+      setBudget(prev => prev - optionCost);
+      setAlertLevel(prev => prev + (option.alertPenalty || 15));
       setSuspects(prev => prev.map(s => s.id === activeSuspect.id ? { ...s, isFailed: true } : s));
       setActiveSuspect(prev => ({ ...prev, isFailed: true }));
       setFeedback(`❌ ${option.feedback}`);
-      checkGameOver(newBudget, newAlert, newAssedio);
     }
-    setTurnCounter(prev => prev + 1);
   };
 
   const handlePresentEvidence = (evidence, suspect) => {
@@ -129,9 +118,7 @@ function App() {
   };
 
   const restartGame = () => {
-    setSuspects(suspectsData); setActiveSuspect(null); setFeedback(""); setActiveTab("dashboard");
-    setBudget(200000); setInventory([]); setAnalyzedEvidences([]); setAlertLevel(0); setAssedioLevel(0);
-    setTurnCounter(0); setActiveEvent(null); setIsMuralUnlocked(false); setGameStatus("start");
+    window.location.reload();
   };
 
   if (gameStatus === "start") return <StartScreen onStart={handleStartGame} savedName={playerName} />;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import VirusScreen from './VirusScreen'; // Certifique-se de ter criado este arquivo
+import VirusScreen from './VirusScreen'; 
 
 const initialEmails = [
   { id: 1, from: "TI (Suporte)", subject: "ATUALIZAÇÃO DE SENHA", body: "Sua senha expirou. Clique aqui para resetar agora ou sua conta será bloqueada.", isPhishing: true },
@@ -10,9 +10,10 @@ const initialEmails = [
 function EmailCenter({ onPhishingClick, onDenunciaClick }) {
   const [hacked, setHacked] = useState(false);
 
-  // Se o aluno clicou em phishing, ele é "hackeado" e a tela muda
+  // Se o aluno clicou em phishing, exibimos o VirusScreen
+  // Ao finalizar (onFinish), apenas voltamos o estado para false, sem recarregar a página
   if (hacked) {
-    return <VirusScreen onFinish={() => window.location.reload()} />;
+    return <VirusScreen onFinish={() => setHacked(false)} />;
   }
 
   return (
@@ -27,8 +28,8 @@ function EmailCenter({ onPhishingClick, onDenunciaClick }) {
           {email.isPhishing ? (
             <button 
               onClick={() => {
-                setHacked(true); // Ativa a tela preta
-                onPhishingClick(); // Chama a função do App.js para penalizar
+                setHacked(true); // Entra na tela de vírus
+                onPhishingClick(); // Aplica a penalidade no App.js
               }} 
               style={{ backgroundColor: '#dc2626', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}
             >

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import VirusScreen from './VirusScreen'; // Certifique-se de ter criado este arquivo
 
 const initialEmails = [
   { id: 1, from: "TI (Suporte)", subject: "ATUALIZAÇÃO DE SENHA", body: "Sua senha expirou. Clique aqui para resetar agora ou sua conta será bloqueada.", isPhishing: true },
@@ -7,6 +8,13 @@ const initialEmails = [
 ];
 
 function EmailCenter({ onPhishingClick, onDenunciaClick }) {
+  const [hacked, setHacked] = useState(false);
+
+  // Se o aluno clicou em phishing, ele é "hackeado" e a tela muda
+  if (hacked) {
+    return <VirusScreen onFinish={() => window.location.reload()} />;
+  }
+
   return (
     <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px' }}>
       <h2>📧 Caixa de Entrada</h2>
@@ -15,10 +23,24 @@ function EmailCenter({ onPhishingClick, onDenunciaClick }) {
           <strong>De: {email.from}</strong><br/>
           <strong>Assunto: {email.subject}</strong>
           <p>{email.body}</p>
+          
           {email.isPhishing ? (
-            <button onClick={onPhishingClick} style={{ backgroundColor: '#dc2626', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}>Acessar Link (Perigoso)</button>
+            <button 
+              onClick={() => {
+                setHacked(true); // Ativa a tela preta
+                onPhishingClick(); // Chama a função do App.js para penalizar
+              }} 
+              style={{ backgroundColor: '#dc2626', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}
+            >
+              Acessar Link (Perigoso)
+            </button>
           ) : (
-            <button onClick={onDenunciaClick} style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}>Abrir Dossiê de Denúncia</button>
+            <button 
+              onClick={onDenunciaClick} 
+              style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}
+            >
+              Abrir Dossiê de Denúncia
+            </button>
           )}
         </div>
       ))}

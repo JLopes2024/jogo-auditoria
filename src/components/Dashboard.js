@@ -4,13 +4,20 @@ function Dashboard({ suspects }) {
   const [activeView, setActiveView] = useState("geral"); 
   const [audited, setAudited] = useState({ u1: false, u2: false, u3: false, sede: false });
 
+  // Lista de unidades para renderização dinâmica
+  const units = [
+    { id: 'u1', name: 'Unidade 1', requiredIds: [1, 5] },
+    { id: 'u2', name: 'Unidade 2', requiredIds: [2, 6] },
+    { id: 'u3', name: 'Unidade 3', requiredIds: [3, 7] },
+    { id: 'sede', name: 'Sede', requiredIds: [4, 8] }
+  ];
+
   const handleVerdict = (unit, correctVerdictId, selectedVerdict) => {
-    if (!selectedVerdict) return;
     if (selectedVerdict === correctVerdictId) {
-      setAudited({ ...audited, [unit]: true });
+      setAudited(prev => ({ ...prev, [unit]: true }));
       alert("✅ VEREDITO APROVADO! O Ministério Público aceitou seu relatório.");
     } else {
-      alert("❌ VEREDITO REJEITADO! A análise técnica está incorreta. Revise os dados do dossiê.");
+      alert("❌ VEREDITO REJEITADO! A análise técnica está incorreta.");
     }
   };
 
@@ -22,29 +29,38 @@ function Dashboard({ suspects }) {
 
       <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', flexWrap: 'wrap' }}>
         <button onClick={() => setActiveView("geral")} style={tabStyle(activeView === "geral")}>🏛️ Visão Geral</button>
-        <button onClick={() => setActiveView("u1")} style={tabStyle(activeView === "u1")}>📍 Unidade 1 {audited.u1 && "✅"}</button>
+        {units.map(u => (
+          <button key={u.id} onClick={() => setActiveView(u.id)} style={tabStyle(activeView === u.id)}>
+            📍 {u.name} {audited[u.id] && "✅"}
+          </button>
+        ))}
       </div>
 
       {activeView === "geral" && (
         <div>
           <h3>Bem-vindo, Auditor.</h3>
-          <p>Selecione uma unidade no menu acima para iniciar a análise dos dossiês criminais.</p>
+          <p>Selecione uma das unidades ou a Sede no menu acima para iniciar a análise dos dossiês.</p>
         </div>
       )}
 
-      {activeView === "u1" && (
-        <div>
-          <h2 style={{ color: '#1e293b' }}>Dossiê: Unidade 1 (Centro)</h2>
-          <VerdictSection unit="u1" isAudited={audited.u1} suspects={suspects} requiredIds={[1, 5]} 
+      {units.map(u => activeView === u.id && (
+        <div key={u.id}>
+          <h2 style={{ color: '#1e293b' }}>Dossiê: {u.name}</h2>
+          <VerdictSection 
+            unit={u.id} 
+            isAudited={audited[u.id]} 
+            suspects={suspects} 
+            requiredIds={u.requiredIds} 
+            correctId="v2" 
+            onVerdict={handleVerdict}
             options={[
               { id: 'v1', text: 'Sonegação Fiscal.' },
               { id: 'v2', text: 'Pejotização Ilegal (Vínculo Empregatício).' },
               { id: 'v3', text: 'Terceirização lícita.' }
             ]}
-            correctId="v2" onVerdict={handleVerdict}
           />
         </div>
-      )}
+      ))}
     </div>
   );
 }
@@ -68,7 +84,7 @@ function VerdictSection({ unit, isAudited, options, correctId, onVerdict, suspec
   if (isLocked) return (
     <div style={{ marginTop: '30px', backgroundColor: '#f1f5f9', padding: '20px', borderRadius: '8px', border: '1px solid #94a3b8', textAlign: 'center' }}>
       <h3>🔒 Bloqueado</h3>
-      <p>Interrogue: <strong>{missingSuspects.join(', ')}</strong>.</p>
+      <p>Interrogue os suspeitos necessários para desbloquear esta unidade: <strong>{missingSuspects.join(', ')}</strong>.</p>
     </div>
   );
 

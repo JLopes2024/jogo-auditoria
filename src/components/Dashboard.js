@@ -3,37 +3,6 @@ import React, { useState } from 'react';
 function Dashboard({ suspects }) {
   const [activeView, setActiveView] = useState("geral"); 
   const [audited, setAudited] = useState({ u1: false, u2: false, u3: false, sede: false });
-  
-  const [faturamento, setFaturamento] = useState('');
-  const [socios, setSocios] = useState('');
-  const [resultadoSimulacao, setResultadoSimulacao] = useState(null);
-
-  const handleSimular = () => {
-    if (!faturamento || !socios) {
-      alert("Preencha o faturamento e o número de sócios para simular.");
-      return;
-    }
-    let natureza = "", porte = "", regime = "", alerta = "";
-    if (faturamento === "81k") porte = "Microempreendedor (Limite MEI)";
-    else if (faturamento === "360k") porte = "ME (Microempresa)";
-    else if (faturamento === "4.8m") porte = "EPP (Empresa de Pequeno Porte)";
-    else porte = "Médio e Grande Porte";
-
-    if (socios === "1") {
-      natureza = faturamento === "81k" ? "MEI, SLU ou EI" : "SLU ou EI";
-      regime = faturamento === "gigante" ? "Lucro Real" : "Simples Nacional ou Lucro Presumido";
-      if (socios === "1" && faturamento !== "81k") alerta = "Atenção: Passou do limite do MEI. Desenquadramento obrigatório!";
-    } else if (socios === "2+") {
-      natureza = "LTDA ou Sociedade Simples";
-      regime = faturamento === "gigante" ? "Lucro Real" : "Simples ou Presumido";
-      if (faturamento === "81k") alerta = "Fraude: MEI não pode ter sócios!";
-    } else {
-      natureza = "S/A (Sociedade Anônima)";
-      regime = "Lucro Real ou Presumido";
-      alerta = "S/A exige compliance rigoroso. Vedado Simples Nacional.";
-    }
-    setResultadoSimulacao({ natureza, porte, regime, alerta });
-  };
 
   const handleVerdict = (unit, correctVerdictId, selectedVerdict) => {
     if (!selectedVerdict) return;
@@ -54,14 +23,13 @@ function Dashboard({ suspects }) {
       <div style={{ display: 'flex', gap: '10px', marginBottom: '25px', flexWrap: 'wrap' }}>
         <button onClick={() => setActiveView("geral")} style={tabStyle(activeView === "geral")}>🏛️ Visão Geral</button>
         <button onClick={() => setActiveView("u1")} style={tabStyle(activeView === "u1")}>📍 Unidade 1 {audited.u1 && "✅"}</button>
-        <button onClick={() => setActiveView("u2")} style={tabStyle(activeView === "u2")}>📍 Unidade 2 {audited.u2 && "✅"}</button>
-        <button onClick={() => setActiveView("u3")} style={tabStyle(activeView === "u3")}>📍 Unidade 3 {audited.u3 && "✅"}</button>
-        <button onClick={() => setActiveView("sede")} style={tabStyle(activeView === "sede")}>💼 Sede {audited.sede && "✅"}</button>
       </div>
 
       {activeView === "geral" && (
-        /* ... (seu bloco de simulador se mantém igual) ... */
-        <div><h3 style={{ color: '#0f172a' }}>Simulador de Enquadramento da Receita Federal</h3></div>
+        <div>
+          <h3>Bem-vindo, Auditor.</h3>
+          <p>Selecione uma unidade no menu acima para iniciar a análise dos dossiês criminais.</p>
+        </div>
       )}
 
       {activeView === "u1" && (

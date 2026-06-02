@@ -99,15 +99,9 @@ function Dashboard({ suspects }) {
         </div>
       )}
 
-      {/* Renderização das Unidades */}
       {activeView === "u1" && (
         <div>
           <h2 style={{ color: '#1e293b' }}>Dossiê: Unidade 1 (Centro)</h2>
-          <div style={dossierGrid}>
-            <div style={dossierCard}><strong>Gestão:</strong> Diego (Gerente)</div>
-            <div style={dossierCard}><strong>Alvos:</strong> Carlos (Instrutor Chefe)</div>
-          </div>
-          <div style={reportBox}><strong>Legislação:</strong> Carlos abriu MEI, mas obedece ordens diretas.</div>
           <VerdictSection unit="u1" isAudited={audited.u1} suspects={suspects} requiredIds={[1, 5]} 
             options={[
               { id: 'v1', text: 'Sonegação Fiscal.' },
@@ -118,8 +112,6 @@ function Dashboard({ suspects }) {
           />
         </div>
       )}
-      
-      {/* (Adicione U2, U3 e Sede seguindo o mesmo padrão do VerdictSection) */}
     </div>
   );
 }
@@ -177,9 +169,6 @@ function VerdictSection({ unit, isAudited, options, correctId, onVerdict, suspec
 }
 
 const tabStyle = (isActive) => ({ padding: '10px 15px', backgroundColor: isActive ? '#2563eb' : '#f1f5f9', color: isActive ? '#fff' : '#475569', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' });
-const dossierGrid = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' };
-const dossierCard = { backgroundColor: '#eff6ff', padding: '15px', borderRadius: '6px', borderLeft: '4px solid #2563eb' };
-const reportBox = { padding: '20px', backgroundColor: '#fffbeb', border: '1px solid #fcd34d', borderRadius: '8px' };
 const selectStyle = { width: '100%', padding: '10px', border: '1px solid #cbd5e1' };
 
 export default Dashboard;

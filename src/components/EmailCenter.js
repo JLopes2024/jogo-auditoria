@@ -33,14 +33,14 @@ function EmailCenter({ onPhishingClick, onDenunciaClick }) {
               }} 
               style={{ backgroundColor: '#dc2626', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}
             >
-              Acessar Link (Perigoso)
+              Abrir e-mail
             </button>
           ) : (
             <button 
               onClick={onDenunciaClick} 
               style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}
             >
-              Abrir Dossiê de Denúncia
+              Abrir e-mail
             </button>
           )}
         </div>

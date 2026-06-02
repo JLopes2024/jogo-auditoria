@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const initialEmails = [
   { id: 1, from: "TI (Suporte)", subject: "ATUALIZAÇÃO DE SENHA", body: "Sua senha expirou. Clique aqui para resetar agora ou sua conta será bloqueada.", isPhishing: true },

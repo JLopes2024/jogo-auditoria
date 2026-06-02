@@ -14,21 +14,25 @@ function VirusScreen({ onFinish }) {
       i++;
       if (i > 15) {
         clearInterval(interval);
-        setTimeout(onFinish, 2000);
       }
     }, 300);
     return () => clearInterval(interval);
-  }, [onFinish]);
+  }, []);
 
   return (
-   <div style={{ backgroundColor: 'black', color: '#00FF00', padding: '20px', height: '100vh', fontFamily: 'monospace' }}>
+    <div style={{ backgroundColor: 'black', color: '#00FF00', padding: '20px', height: '100vh', fontFamily: 'monospace' }}>
       <h2>⚠️ SISTEMA COMPROMETIDO</h2>
       {logs.map((log, index) => <div key={index}>{`> ${log}`}</div>)}
       <h1 style={{ color: 'red', marginTop: '50px' }}>VOCÊ PERDEU R$ 30.000 PELO ERRO!</h1>
       
-      <button onClick={onFinish} style={{ marginTop: '20px', padding: '15px', cursor: 'pointer' }}>
+      <button 
+        onClick={onFinish} 
+        style={{ marginTop: '20px', padding: '15px', cursor: 'pointer', backgroundColor: '#fff', border: 'none' }}
+      >
         TENTAR RECUPERAR SISTEMA
       </button>
+    </div>
   );
 }
+
 export default VirusScreen;
